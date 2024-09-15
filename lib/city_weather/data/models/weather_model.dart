@@ -1,4 +1,4 @@
-import 'package:weather_app_tdd_cleanarch/city_weather/domain/entities/weather.dart';
+import '../../domain/entities/weather.dart';
 
 class WeatherModel extends WeatherEntity {
   const WeatherModel({

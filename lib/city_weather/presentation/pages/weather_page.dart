@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app_tdd_cleanarch/city_weather/presentation/bloc/weather_bloc.dart';
-import 'package:weather_app_tdd_cleanarch/city_weather/presentation/bloc/weather_event.dart';
-import 'package:weather_app_tdd_cleanarch/city_weather/presentation/bloc/weather_state.dart';
 
 import '../../../core/constants.dart';
+import '../bloc/weather_bloc.dart';
+import '../bloc/weather_event.dart';
+import '../bloc/weather_state.dart';
 
 class WeatherPage extends StatelessWidget {
   const WeatherPage({super.key});
@@ -47,6 +48,8 @@ class WeatherPage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 32.0),
+
+            // BlocBuilder is a widget that rebuilds when the state changes
             BlocBuilder<WeatherBloc, WeatherState>(
               builder: (context, state) {
                 if (state is WeatherLoading) {
@@ -71,66 +74,49 @@ class WeatherPage extends StatelessWidget {
                                 Urls.weatherIcon(state.weather.iconCode)),
                           ),
                           const SizedBox(height: 8.0),
-                          Text(
-                            '${state.weather.main} | ${state.weather.description}',
-                            style: const TextStyle(
-                                fontSize: 16.0, letterSpacing: 1.2),
-                          ),
-                          const SizedBox(height: 24.0),
-                          Table(
-                            defaultColumnWidth: const FixedColumnWidth(150.0),
-                            border: TableBorder.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 1.0,
-                            ),
+                        ],
+                      ),
+                      Text(
+                        '${state.weather.main} | ${state.weather.description}',
+                        style:
+                            const TextStyle(fontSize: 16.0, letterSpacing: 1.2),
+                      ),
+                      const SizedBox(height: 24.0),
+                      Table(
+                        defaultColumnWidth: const FixedColumnWidth(150.0),
+                        border: TableBorder.all(
+                          color: Colors.grey,
+                          style: BorderStyle.solid,
+                          width: 1.0,
+                        ),
+                        children: [
+                          TableRow(
                             children: [
-                              TableRow(
-                                children: [
-                                  const TableRowTitle(title: 'Temperature'),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      state.weather.temperature.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              const TableRowTitle(
+                                title: 'Temperature',
                               ),
-                              TableRow(
-                                children: [
-                                  const TableRowTitle(title: 'Pressure'),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      state.weather.pressure.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                        letterSpacing: 1.2,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              TableRowValue(
+                                data: state.weather.temperature.toString(),
                               ),
-                              TableRow(
-                                children: [
-                                  const TableRowTitle(title: 'Humidity'),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      state.weather.humidity.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                        letterSpacing: 1.2,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              const TableRowTitle(
+                                title: 'Pressure',
+                              ),
+                              TableRowValue(
+                                data: state.weather.pressure.toString(),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              const TableRowTitle(
+                                title: 'Humidity',
+                              ),
+                              TableRowValue(
+                                data: state.weather.humidity.toString(),
                               ),
                             ],
                           ),
@@ -145,7 +131,8 @@ class WeatherPage extends StatelessWidget {
                     child: Text(state.message),
                   );
                 }
-                return const SizedBox.shrink();
+
+                return Container();
               },
             ),
           ],
@@ -155,9 +142,33 @@ class WeatherPage extends StatelessWidget {
   }
 }
 
+class TableRowValue extends StatelessWidget {
+  const TableRowValue({
+    super.key,
+    required this.data,
+  });
+
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        data,
+        style: const TextStyle(
+          fontSize: 16.0,
+          letterSpacing: 1.2,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
 class TableRowTitle extends StatelessWidget {
   const TableRowTitle({
-    super.key, 
+    super.key,
     required this.title,
   });
 
@@ -176,6 +187,4 @@ class TableRowTitle extends StatelessWidget {
       ),
     );
   }
-
- 
 }
